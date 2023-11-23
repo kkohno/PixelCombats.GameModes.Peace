@@ -1,4 +1,5 @@
 {
+  "ApiVersion": 2,
   "Name": "PEACE",
   "Description": "Мирный режим",
   "StartClientVersion": 334,
