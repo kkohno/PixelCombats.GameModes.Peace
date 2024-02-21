@@ -27,7 +27,7 @@ function set_build_settings() {
     context.ChangeMapAuthorsEnable.Value = true;
     context.LoadMapEnable.Value = true;
     context.ChangeSpawnsEnable.Value = true;
-    context.BlocksSet.Value = BuildBlocksSet.AllClear; // делаем возможность строительства всеми блоками
+    context.BlocksSet.Value = room.BuildBlocksSet.AllClear; // делаем возможность строительства всеми блоками
 }
 
 // задает в контекст инвентаря пустой инвентарь
