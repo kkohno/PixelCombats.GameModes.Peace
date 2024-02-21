@@ -1,4 +1,4 @@
-import { Inventory, Build, BuildBlocksSet, BreackGraph, GameMode, Properties, Ui, Spawns } from 'pixel_combats/room';
+import { Inventory, Build, BuildBlocksSet, BreackGraph, GameMode, Properties, Ui, Spawns, Damage } from 'pixel_combats/room';
 import * as teams from './default_teams.js';
 
 // разрешает все что можно для строительства
