@@ -70,12 +70,12 @@ export function configure() {
 
 export function create_teams() {
     // создаем команды
-    red = GameMode.Parameters.GetBool("RedTeam");
-    blue = GameMode.Parameters.GetBool("BlueTeam");
-    if (red || !red && !blue) {
+    const hasRedTeam = GameMode.Parameters.GetBool("RedTeam");
+    const hasBlueTeam = GameMode.Parameters.GetBool("BlueTeam");
+    if (hasRedTeam || !hasRedTeam && !hasBlueTeam) {
         teams.create_team_red();
     }
-    if (blue || !red && !blue) {
+    if (hasBlueTeam || !hasRedTeam && !hasBlueTeam) {
         const blueTeam = teams.create_team_blue();
         if (GameMode.Parameters.GetBool("BlueHasNothing")) {
             set_empty_inventory(blueTeam.Inventory);
