@@ -1,9 +1,9 @@
-import { Inventory, Build, BuildBlocksSet, BreackGraph, GameMode, Properties, Ui, Spawns, Damage } from 'pixel_combats/room';
+import * as room from 'pixel_combats/room';
 import * as teams from './default_teams.js';
 
 // разрешает все что можно для строительства
 function set_inventory() {
-    const context = Inventory.GetContext();
+    const context = room.Inventory.GetContext();
     context.Main.Value = false;
     context.Secondary.Value = false;
     context.Melee.Value = true;
@@ -13,7 +13,7 @@ function set_inventory() {
 }
 
 function set_build_settings() {
-    const context = Build.GetContext();
+    const context = room.Build.GetContext();
     // прочие опции
     context.Pipette.Value = true;
     context.BalkLenChange.Value = true;
@@ -41,28 +41,28 @@ function set_empty_inventory(inventory) {
 
 // задает опции режима мир, выбранные при создании комнаты
 export function apply_room_options() {
-    const gameModeParameters = GameMode.Parameters;
+    const gameModeParameters = room.GameMode.Parameters;
 
     // опции строительства
-    const buildContext = Build.GetContext();
+    const buildContext = room.Build.GetContext();
     buildContext.FloodFill.Value = gameModeParameters.GetBool("FloodFill");
     buildContext.FillQuad.Value = gameModeParameters.GetBool("FillQuad");
     buildContext.RemoveQuad.Value = gameModeParameters.GetBool("RemoveQuad");
     buildContext.FlyEnable.Value = gameModeParameters.GetBool("Fly");
 
     // прочие опции
-    Damage.GetContext().DamageOut.Value = gameModeParameters.GetBool("Damage");
-    BreackGraph.OnlyPlayerBlocksDmg = gameModeParameters.GetBool("PartialDesruction");
-    BreackGraph.WeakBlocks = gameModeParameters.GetBool("LoosenBlocks");
+    room.Damage.GetContext().DamageOut.Value = gameModeParameters.GetBool("Damage");
+    room.BreackGraph.OnlyPlayerBlocksDmg = gameModeParameters.GetBool("PartialDesruction");
+    room.BreackGraph.WeakBlocks = gameModeParameters.GetBool("LoosenBlocks");
 }
 
 // задает настройки режима мир
 export function configure() {
-    Properties.GetContext().GameModeName.Value = "GameModes/Peace";// задаем название режима
-    Ui.GetContext().Hint.Value = "Hint/BuildBase";// выводим подсказку
-    Ui.GetContext().QuadsCount.Value = true;// выводим количество квадов на карте
-    BreackGraph.BreackAll = true; // делаем так, чтобы можно было сломать любой блок
-    Spawns.GetContext().RespawnTime.Value = 0; // убираем таймер респавна
+    room.Properties.GetContext().GameModeName.Value = "GameModes/Peace";// задаем название режима
+    room.Ui.GetContext().Hint.Value = "Hint/BuildBase";// выводим подсказку
+    room.Ui.GetContext().QuadsCount.Value = true;// выводим количество квадов на карте
+    room.BreackGraph.BreackAll = true; // делаем так, чтобы можно было сломать любой блок
+    room.Spawns.GetContext().RespawnTime.Value = 0; // убираем таймер респавна
     set_build_settings();
     set_inventory();
     apply_room_options();
@@ -70,20 +70,21 @@ export function configure() {
 
 export function create_teams() {
     // создаем команды
-    const hasRedTeam = GameMode.Parameters.GetBool("RedTeam");
-    const hasBlueTeam = GameMode.Parameters.GetBool("BlueTeam");
+    const roomParameters = room.GameMode.Parameters;
+    const hasRedTeam = roomParameters.GetBool("RedTeam");
+    const hasBlueTeam = roomParameters.GetBool("BlueTeam");
     if (hasRedTeam || !hasRedTeam && !hasBlueTeam) {
         teams.create_team_red();
     }
     if (hasBlueTeam || !hasRedTeam && !hasBlueTeam) {
         const blueTeam = teams.create_team_blue();
-        if (GameMode.Parameters.GetBool("BlueHasNothing")) {
+        if (roomParameters.GetBool("BlueHasNothing")) {
             set_empty_inventory(blueTeam.Inventory);
         }
     }
 
     // по запросу на вход в команду - кидаем игрока в команду
-    Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
+    room.Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
     // если игрок сменил команду или выбрал ее, то происходит спавн игрока
-    Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn() });
+    room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn() });
 }
