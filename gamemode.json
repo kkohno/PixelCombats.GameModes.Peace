@@ -1,7 +1,8 @@
 {
-  "Name": "PEACE",
+  "ApiVersion": 2,
+  "Name": "PEACE (API 2.0)",
   "Description": "Мирный режим",
-  "StartClientVersion": 334,
+  "StartClientVersion": 532,
   "MapLists": [
     {
       "MapListId": 324,
