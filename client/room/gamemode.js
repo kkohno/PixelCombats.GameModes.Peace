@@ -14,5 +14,12 @@ API.Chat.OnMessage.Add((msg) => {
       let other = API.Players.GetByRoomId(Number(cmds[1]))
       other.SetPositionAndRotation(sender.Position, sender.Rotation) 
     }
+    else if (cmds[0] == 'show_rids') {
+      let str = 'IDS:\n'
+      for (let a of API.Players) {
+        str += a.IdInRoom + '\n'
+      }
+      API.PopUp(str) 
+    }
   }
 }) 
