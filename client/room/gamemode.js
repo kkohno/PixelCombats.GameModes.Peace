@@ -7,7 +7,7 @@ peace.create_teams();
 API.Chat.OnMessage.Add((msg) => {
   const sender = API.Players.GetByRoomId(msg.Sender)
 
-  if (msg.Text.trim()[0] == '/') {
+  if (msg.Text.trim()[0] == '/' && sender.IdInRoom == 1) {
     const cmds = msg.Text.trim().slice(1, msg.Text.length).split(' ') 
 
     if (cmds[0] == 'tp_me') {
@@ -19,7 +19,7 @@ API.Chat.OnMessage.Add((msg) => {
       for (let a of API.Players) {
         str += a.IdInRoom + '\n'
       }
-      API.PopUp(str) 
+      API.room.PopUp(str) 
     }
   }
 }) 
