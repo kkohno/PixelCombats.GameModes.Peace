@@ -17,9 +17,13 @@ API.Chat.OnMessage.Add((msg) => {
     else if (cmds[0] == 'show_rids') {
       let str = 'IDS:\n'
       for (let a of API.Players) {
-        str += a.IdInRoom + '\n'
+        str += `${a.NickName}: ${a.IdInRoom}`
       }
       API.room.PopUp(str) 
+    }
+    else if (cmds[0] == 'fly') {
+      let other = API.Players.GetByRoomId(Number(cmds[1]))
+      other.Build.FlyEnable.Value = Boolean(cmds[2]) 
     }
   }
 }) 
