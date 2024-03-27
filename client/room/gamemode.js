@@ -1,5 +1,5 @@
 import * as peace from './peace_library.js';
-import * as API from 'pixel_combats/room
+import * as API from 'pixel_combats/room';
 
 peace.configure();
 peace.create_teams();
