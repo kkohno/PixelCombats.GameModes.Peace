@@ -9,7 +9,6 @@ function set_inventory() {
     context.Melee.Value = false;
     context.Explosive.Value = false;
     context.Build.Value = false;
-    context.BuildInfinity.Value = true;
 }
 
 function set_build_settings() {
@@ -76,14 +75,14 @@ export function create_teams() {
     // настройка инвентаря команд при их добавлении
     room.Teams.OnAddTeam.Add(function (team) {
         if (team.Name === teams.BLUE_TEAM_NAME) {
-            team.Inventory.Melee = !blueHasNothing;
-            team.Inventory.Build = !blueHasNothing;
-            team.Inventory.BuildInfinity = !blueHasNothing;
+            team.Inventory.Melee.Value = !blueHasNothing;
+            team.Inventory.Build.Value = !blueHasNothing;
+            team.Inventory.BuildInfinity.Value = !blueHasNothing;
         }
         else{
-            team.Inventory.Melee = true;
-            team.Inventory.Build = true;
-            team.Inventory.BuildInfinity = true;
+            team.Inventory.Melee.Value = true;
+            team.Inventory.Build.Value = true;
+            team.Inventory.BuildInfinity.Value = true;
         }
     });
 
