@@ -58,25 +58,11 @@ export function configure() {
     apply_room_options();
 }
 
-const blueHasNothing = room.GameMode.Parameters.GetBool("BlueHasNothing");
-// настройка инвентаря команд при их добавлении
-room.Teams.OnAddTeam.Add(function (team) {
-    if (team.Name === teams.BLUE_TEAM_NAME) {
-        team.Inventory.Melee.Value = !blueHasNothing;
-        team.Inventory.Build.Value = !blueHasNothing;
-        team.Inventory.BuildInfinity.Value = !blueHasNothing;
-    }
-    else {
-        team.Inventory.Melee.Value = true;
-        team.Inventory.Build.Value = true;
-        team.Inventory.BuildInfinity.Value = true;
-    }
-});
-
 export function create_teams() {
     const roomParameters = room.GameMode.Parameters;
     const hasRedTeam = roomParameters.GetBool("RedTeam");
     const hasBlueTeam = roomParameters.GetBool("BlueTeam");
+    const blueHasNothing = roomParameters.GetBool("BlueHasNothing");
 
     // создание команд на основе параметров
     if (hasRedTeam || (!hasRedTeam && !hasBlueTeam)) {
@@ -85,6 +71,20 @@ export function create_teams() {
     if (hasBlueTeam || (!hasRedTeam && !hasBlueTeam)) {
         teams.create_team_blue();
     }
+
+    // настройка инвентаря команд при их добавлении
+    room.Teams.OnAddTeam.Add(function (team) {
+        if (team.Name === teams.BLUE_TEAM_NAME) {
+            team.Inventory.Melee.Value = !blueHasNothing;
+            team.Inventory.Build.Value = !blueHasNothing;
+            team.Inventory.BuildInfinity.Value = !blueHasNothing;
+        }
+        else{
+            team.Inventory.Melee.Value = true;
+            team.Inventory.Build.Value = true;
+            team.Inventory.BuildInfinity.Value = true;
+        }
+    });
 
     // по запросу на вход в команду - кидаем игрока в команду
     room.Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
