@@ -72,22 +72,23 @@ export function create_teams() {
         teams.create_team_blue();
     }
 
-    // настройка инвентаря команд при их добавлении
-    room.Teams.OnAddTeam.Add(function (team) {
-        if (team.Name === teams.BLUE_TEAM_NAME) {
-            team.Inventory.Melee.Value = !blueHasNothing;
-            team.Inventory.Build.Value = !blueHasNothing;
-            team.Inventory.BuildInfinity.Value = !blueHasNothing;
-        }
-        else{
-            team.Inventory.Melee.Value = true;
-            team.Inventory.Build.Value = true;
-            team.Inventory.BuildInfinity.Value = true;
-        }
-    });
-
     // по запросу на вход в команду - кидаем игрока в команду
     room.Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
     // если игрок сменил команду или выбрал ее, то происходит спавн игрока
     room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn(); });
 }
+
+const blueHasNothing = roomParameters.GetBool("BlueHasNothing");
+// настройка инвентаря команд при их добавлении
+room.Teams.OnAddTeam.Add(function (team) {
+    if (team.Name === teams.BLUE_TEAM_NAME) {
+        team.Inventory.Melee.Value = !blueHasNothing;
+        team.Inventory.Build.Value = !blueHasNothing;
+        team.Inventory.BuildInfinity.Value = !blueHasNothing;
+    }
+    else {
+        team.Inventory.Melee.Value = true;
+        team.Inventory.Build.Value = true;
+        team.Inventory.BuildInfinity.Value = true;
+    }
+});
