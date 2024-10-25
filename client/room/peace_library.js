@@ -58,26 +58,6 @@ export function configure() {
     apply_room_options();
 }
 
-export function create_teams() {
-    const roomParameters = room.GameMode.Parameters;
-    const hasRedTeam = roomParameters.GetBool("RedTeam");
-    const hasBlueTeam = roomParameters.GetBool("BlueTeam");
-    const blueHasNothing = roomParameters.GetBool("BlueHasNothing");
-
-    // создание команд на основе параметров
-    if (hasRedTeam || (!hasRedTeam && !hasBlueTeam)) {
-        teams.create_team_red();
-    }
-    if (hasBlueTeam || (!hasRedTeam && !hasBlueTeam)) {
-        teams.create_team_blue();
-    }
-
-    // по запросу на вход в команду - кидаем игрока в команду
-    room.Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
-    // если игрок сменил команду или выбрал ее, то происходит спавн игрока
-    room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn(); });
-}
-
 const blueHasNothing = roomParameters.GetBool("BlueHasNothing");
 // настройка инвентаря команд при их добавлении
 room.Teams.OnAddTeam.Add(function (team) {
@@ -92,3 +72,22 @@ room.Teams.OnAddTeam.Add(function (team) {
         team.Inventory.BuildInfinity.Value = true;
     }
 });
+
+export function create_teams() {
+    const roomParameters = room.GameMode.Parameters;
+    const hasRedTeam = roomParameters.GetBool("RedTeam");
+    const hasBlueTeam = roomParameters.GetBool("BlueTeam");
+
+    // создание команд на основе параметров
+    if (hasRedTeam || (!hasRedTeam && !hasBlueTeam)) {
+        teams.create_team_red();
+    }
+    if (hasBlueTeam || (!hasRedTeam && !hasBlueTeam)) {
+        teams.create_team_blue();
+    }
+
+    // по запросу на вход в команду - кидаем игрока в команду
+    room.Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
+    // если игрок сменил команду или выбрал ее, то происходит спавн игрока
+    room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn(); });
+}
