@@ -58,7 +58,7 @@ export function configure() {
     apply_room_options();
 }
 
-const blueHasNothing = roomParameters.GetBool("BlueHasNothing");
+const blueHasNothing = room.GameMode.Parameters.GetBool("BlueHasNothing");
 // настройка инвентаря команд при их добавлении
 room.Teams.OnAddTeam.Add(function (team) {
     if (team.Name === teams.BLUE_TEAM_NAME) {
