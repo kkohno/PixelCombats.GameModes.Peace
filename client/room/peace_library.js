@@ -6,9 +6,10 @@ function set_inventory() {
     const context = room.Inventory.GetContext();
     context.Main.Value = false;
     context.Secondary.Value = false;
-    context.Melee.Value = false;
+    context.Melee.Value = true;
     context.Explosive.Value = false;
-    context.Build.Value = false;
+    context.Build.Value = true;
+    context.BuildInfinity.Value = true;
 }
 
 function set_build_settings() {
@@ -27,6 +28,15 @@ function set_build_settings() {
     context.LoadMapEnable.Value = true;
     context.ChangeSpawnsEnable.Value = true;
     context.BlocksSet.Value = room.BuildBlocksSet.AllClear; // делаем возможность строительства всеми блоками
+}
+
+// задает в контекст инвентаря пустой инвентарь
+function set_empty_inventory(inventory) {
+    inventory.Main.Value = false;
+    inventory.Secondary.Value = false;
+    inventory.Melee.Value = false;
+    inventory.Explosive.Value = false;
+    inventory.Build.Value = false;
 }
 
 // задает опции режима мир, выбранные при создании комнаты
@@ -59,35 +69,22 @@ export function configure() {
 }
 
 export function create_teams() {
+    // создаем команды
     const roomParameters = room.GameMode.Parameters;
     const hasRedTeam = roomParameters.GetBool("RedTeam");
     const hasBlueTeam = roomParameters.GetBool("BlueTeam");
-    const blueHasNothing = roomParameters.GetBool("BlueHasNothing");
-
-    // создание команд на основе параметров
-    if (hasRedTeam || (!hasRedTeam && !hasBlueTeam)) {
+    if (hasRedTeam || !hasRedTeam && !hasBlueTeam) {
         teams.create_team_red();
     }
-    if (hasBlueTeam || (!hasRedTeam && !hasBlueTeam)) {
-        teams.create_team_blue();
+    if (hasBlueTeam || !hasRedTeam && !hasBlueTeam) {
+        const blueTeam = teams.create_team_blue();
+        if (roomParameters.GetBool("BlueHasNothing")) {
+            set_empty_inventory(blueTeam.Inventory);
+        }
     }
-
-    // настройка инвентаря команд при их добавлении
-    room.Teams.OnAddTeam.Add(function (team) {
-        if (team.Name === teams.BLUE_TEAM_NAME) {
-            team.Inventory.Melee.Value = !blueHasNothing;
-            team.Inventory.Build.Value = !blueHasNothing;
-            team.Inventory.BuildInfinity.Value = !blueHasNothing;
-        }
-        else{
-            team.Inventory.Melee.Value = true;
-            team.Inventory.Build.Value = true;
-            team.Inventory.BuildInfinity.Value = true;
-        }
-    });
 
     // по запросу на вход в команду - кидаем игрока в команду
     room.Teams.OnRequestJoinTeam.Add(function (player, team) { team.Add(player); });
     // если игрок сменил команду или выбрал ее, то происходит спавн игрока
-    room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn(); });
+    room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn() });
 }
