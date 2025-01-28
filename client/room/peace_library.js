@@ -1,4 +1,4 @@
-/*import * as room from 'pixel_combats/room';
+import * as room from 'pixel_combats/room';
 import * as teams from './default_teams.js';
 
 // разрешает все что можно для строительства
@@ -85,57 +85,3 @@ export function create_teams() {
     // если игрок сменил команду или выбрал ее, то происходит спавн игрока
     room.Teams.OnPlayerChangeTeam.Add(function (player) { player.Spawns.Spawn(); });
 }
-*/
-
-import * as room from 'pixel_combats/room';
-import * as teams from './default_teams.js';
-
-const set_inventory = () => ['Main', 'Secondary', 'Melee', 'Explosive', 'Build'].forEach(prop => room.Inventory.GetContext()[prop].Value = false);
-
-const set_build_settings = () => {
-    const context = room.Build.GetContext();
-    ['Pipette', 'BalkLenChange', 'SetSkyEnable', 'GenMapEnable', 'ChangeCameraPointsEnable', 
-     'QuadChangeEnable', 'BuildModeEnable', 'CollapseChangeEnable', 'RenameMapEnable', 
-     'ChangeMapAuthorsEnable', 'LoadMapEnable', 'ChangeSpawnsEnable'].forEach(prop => context[prop].Value = true);
-    context.BlocksSet.Value = room.BuildBlocksSet.AllClear;
-};
-
-export const apply_room_options = () => {
-    const params = room.GameMode.Parameters;
-    const buildContext = room.Build.GetContext();
-    ['FloodFill', 'FillQuad', 'RemoveQuad', 'FlyEnable'].forEach(prop => buildContext[prop].Value = params.GetBool(prop));
-    
-    room.Damage.GetContext().DamageOut.Value = params.GetBool("Damage");
-    room.BreackGraph.OnlyPlayerBlocksDmg = params.GetBool("PartialDesruction");
-    room.BreackGraph.WeakBlocks = params.GetBool("LoosenBlocks");
-};
-
-export const configure = () => {
-    room.Properties.GetContext().GameModeName.Value = "GameModes/Peace";
-    room.Ui.GetContext().Hint.Value = "Hint/BuildBase";
-    room.Ui.GetContext().QuadsCount.Value = true;
-    room.BreackGraph.BreackAll = true;
-    room.Spawns.GetContext().RespawnTime.Value = 0;
-    set_build_settings();
-    set_inventory();
-    apply_room_options();
-};
-
-export const create_teams = () => {
-    const params = room.GameMode.Parameters;
-    const hasRedTeam = params.GetBool("RedTeam");
-    const hasBlueTeam = params.GetBool("BlueTeam");
-    const blueHasNothing = params.GetBool("BlueHasNothing");
-    
-    (hasRedTeam || (!hasRedTeam && !hasBlueTeam)) && teams.create_team_red();
-    (hasBlueTeam || (!hasRedTeam && !hasBlueTeam)) && teams.create_team_blue();
-
-    room.Teams.OnAddTeam.Add(team => {
-       const isBlue = team.Id === teams.BLUE_TEAM_NAME;
-       const hasItems = !blueHasNothing;
-       ['Melee', 'Build', 'BuildInfinity'].forEach(prop => team.Inventory[prop].Value = isBlue ? hasItems : true);
-    });
-    
-    room.Teams.OnRequestJoinTeam.Add((player, team) => team.Add(player));
-    room.Teams.OnPlayerChangeTeam.Add(player => player.Spawns.Spawn());
-};
