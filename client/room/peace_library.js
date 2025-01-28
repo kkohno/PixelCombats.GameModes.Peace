@@ -90,7 +90,7 @@ export function create_teams() {
 import * as room from 'pixel_combats/room';
 import * as teams from './default_teams.js';
 
-const set_inventory = () => Object.values(room.Inventory.GetContext()).forEach(prop => prop.Value = false);
+const set_inventory = () => ['Main', 'Secondary', 'Melee', 'Explosive', 'Build'].forEach(prop => room.Inventory.GetContext()[prop].Value = false);
 
 const set_build_settings = () => {
     const context = room.Build.GetContext();
@@ -131,7 +131,7 @@ export const create_teams = () => {
     (hasBlueTeam || (!hasRedTeam && !hasBlueTeam)) && teams.create_team_blue();
 
     room.Teams.OnAddTeam.Add(team => {
-       const isBlue = team.Name === teams.BLUE_TEAM_NAME;
+       const isBlue = team.Id === teams.BLUE_TEAM_NAME;
        const hasItems = !blueHasNothing;
        ['Melee', 'Build', 'BuildInfinity'].forEach(prop => team.Inventory[prop].Value = isBlue ? hasItems : true);
     });
