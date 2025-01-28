@@ -74,7 +74,7 @@ export function create_teams() {
 
     // настройка инвентаря команд при их добавлении
     room.Teams.OnAddTeam.Add(function (team) {
-        if (team.Name === teams.BLUE_TEAM_NAME) {
+        if (team.Id === teams.BLUE_TEAM_NAME) {
             team.Inventory.Melee.Value = !blueHasNothing;
             team.Inventory.Build.Value = !blueHasNothing;
             team.Inventory.BuildInfinity.Value = !blueHasNothing;
