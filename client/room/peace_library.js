@@ -74,16 +74,10 @@ export function create_teams() {
 
     // настройка инвентаря команд при их добавлении
     room.Teams.OnAddTeam.Add(function (team) {
-        if (team.Name === teams.BLUE_TEAM_NAME) {
-            team.Inventory.Melee.Value = !blueHasNothing;
-            team.Inventory.Build.Value = !blueHasNothing;
-            team.Inventory.BuildInfinity.Value = !blueHasNothing;
-        }
-        else{
-            team.Inventory.Melee.Value = true;
-            team.Inventory.Build.Value = true;
-            team.Inventory.BuildInfinity.Value = true;
-        }
+        const condition = team.Id === teams.BLUE_TEAM_NAME ? !blueHasNothing : true;
+        team.Inventory.Melee.Value = condition;
+        team.Inventory.Build.Value = condition;
+        team.Inventory.BuildInfinity.Value = condition;
     });
 
     // по запросу на вход в команду - кидаем игрока в команду
